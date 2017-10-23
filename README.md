@@ -24,20 +24,35 @@ Code-Review
 ```ObjC
 - (void)setupChildControllers
 {
-   if (idx == 0) [self invokeChildVCMethodWithIndex:idx];
+   [_controllers enumerateObjectsUsingBlock:^(UIViewController *  _Nonnull vc, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (idx == 0) [self invokeChildVCMethodWithIndex:idx];
+    }];
+   
 }
 ```
-   * 滑动停止时
+* 滑动停止时
 ```ObjC
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    //调用子控制器的配置方法
+    CGFloat idx = (NSInteger)scrollView.contentOffset.x;
     [self invokeChildVCMethodWithIndex:idx];
 }
 ```
-   * 点击文字按钮时
+* 点击文字按钮时
 ```ObjC
 - (void)itemDidClicked:(UITapGestureRecognizer *)gesture
-    [self invokeChildVCMethodWithIndex:idx];
+   //计算idx
+   UILabel *item = (UILabel *)gesture.view;
+   if (item == _items[_itemSelectedIndex]) return;
+   idx = (int)[_items indexOfObject:item];
+   [self invokeChildVCMethodWithIndex:idx];
+}
+```
+* 主方法
+```ObjC
+- (void)invokeChildVCMethodWithIndex:(NSInteger)index
+{
+    UIViewController *vc = _controllers[index];
+    objc_msgSend(vc, NSSelectorFromString(kXYChildVCNecessaryMothed));
 }
 ```
