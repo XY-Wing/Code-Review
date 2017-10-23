@@ -11,5 +11,33 @@ Code-Review
 - 评审过程对于评审人员来说，也是一种思路重构的过程。帮助更多的人理解系统。</br>
 # 3.My code review.
 * 今天我要review的是一段优化，及性能提升的代码。
-  * 案例：假勤审批（未优化）
-  * 
+  * 案例：假勤审批（未优化）</br>
+  ![image](https://github.com/XY-Wing/Code-Review/blob/master/GIF/holiday.gif)
+  * 该界面存在的问题：点击进入（`假勤审批`），系统会直接一次行创建五个界面（`请假，出差，加班，外出，补签`）；并且，每个界面都有自己的网络请求，这些请求都是瞬间同时发出，存在一定的风险。（### `声明：产品设计如此` ###）。
+  * 可优化方案：点击进入（`假勤审批`），首先只创建一个界面（请假），用户可自行点击其想要访问的剩余四个界面，点击后创建界面并发出请求，不点击，无操作。这样既节省系统开销，又节省用户流量，提升界面流畅度，提升性能。
+* 应用：
+![image](https://github.com/XY-Wing/Code-Review/blob/master/GIF/QueryDetailNone.gif)
+![image](https://github.com/XY-Wing/Code-Review/blob/master/GIF/QueryDetail.gif)
+* 大家可以仔细的看一下界面从`已签到`滑动到`未签到`时的异同。
+### 实现方式：
+* 进入时：
+```ObjC
+- (void)setupChildControllers
+{
+   if (idx == 0) [self invokeChildVCMethodWithIndex:idx];
+}
+```
+   * 滑动停止时
+```ObjC
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    //调用子控制器的配置方法
+    [self invokeChildVCMethodWithIndex:idx];
+}
+```
+   * 点击文字按钮时
+```ObjC
+- (void)itemDidClicked:(UITapGestureRecognizer *)gesture
+    [self invokeChildVCMethodWithIndex:idx];
+}
+```
