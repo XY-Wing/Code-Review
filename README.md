@@ -2,14 +2,14 @@ Code-Review
 =====
    薛扬(Wing)       
 ---
-# 1.What's code review?
+### 1.What's code review?
 - 代码评审是指在软件开发过程中，对源代码的系统性检查。通常的目的是查找系统缺陷，保证软件总体质量和提高开发者自身水平。 Code Review是轻量级代码评审，相对于正式代码评审，轻量级代码评审所需要的各种成本要明显低的多，如果流程正确，它可以起到更加积极的效果。正因如此，轻量级代码评审经常性得被引入到软件开发过程中。
-# 2.Why we do Code Review?
+### 2.Why we do Code Review?
 - 提高质量</br>
 - 及早发现潜在缺陷与BUG，降低事故成本。</br>
 - 促进团队内部知识共享，提高团队整体水平。</br>
 - 评审过程对于评审人员来说，也是一种思路重构的过程。帮助更多的人理解系统。</br>
-# 3.My code review.
+### 3.My code review.
 * 今天我要review的是一段优化，及性能提升的代码。
   * 案例：假勤审批（未优化）</br>
   ![image](https://github.com/XY-Wing/Code-Review/blob/master/GIF/holiday.gif)
