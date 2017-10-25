@@ -56,3 +56,55 @@ Code-Review
     objc_msgSend(vc, NSSelectorFromString(kXYChildVCNecessaryMothed));
 }
 ```
+### 其次
+* 重新封装了选项卡
+    * 在封装之前，想要创建有两个选项卡的界面的代码是这样的：
+```ObjC
+#pragma mark --- 添加审批中VC
+- (void)addChecKingVC
+{
+    XYCheckingVC *checking = [[XYCheckingVC alloc] init];
+    checking.checkType = _checkType;
+    checking.type = _type;
+    checking.view.frame = _scrollV.bounds;
+    [_scrollV addSubview:checking.view];
+
+    [self addChildViewController:checking];
+    [checking didMoveToParentViewController:self];
+    _checkingVC = checking;
+}
+#pragma mark --- 添加审批完成VC
+- (void)addCheckCompleteVC
+{
+    XYCheckCompleteVC *completeVC = [[XYCheckCompleteVC alloc] init];
+    completeVC.checkType = _checkType;
+    completeVC.type = _type;
+    CGRect frame = _scrollV.bounds;
+    frame.origin.x = screenW;
+    completeVC.view.frame = frame;
+    [_scrollV addSubview:completeVC.view];
+
+    [self addChildViewController:completeVC];
+    [completeVC didMoveToParentViewController:self];
+    _completeVC = completeVC;
+}
+```
+可以看出，每个选项卡界面都需要单独创建单独配置，还需要创建一个副控制器界面，将这两个选项卡添加进去，代码复用困难。
+* 重新封装选项卡后，代码是这样的：
+```ObjC
+- (void)detailBtnDidClickedCircleView:(lhCircleView *)circleV
+{
+
+    XYCheckingVC *checking = [[XYCheckingVC alloc] init];
+    //配置参数
+    XYCheckCompleteVC *completeVC = [[XYCheckCompleteVC alloc] init];
+    //配置参数
+    
+    //只需要将选项卡界面传递给XYMultiInterfaceVC，一切操作由XYMultiInterfaceVC完成，代码完全可以复用。
+    XYMultiInterfaceVC *multiVC = [[XYMultiInterfaceVC alloc] init];
+    multiVC.navigationItem.title = @"出勤明细";
+    multiVC.titleArr = @[@"已签到",@"未签到"];
+    multiVC.vcs = @[detailVC,detailVC2];
+    PushVC(multiVC);
+}
+```
